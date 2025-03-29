@@ -24,7 +24,7 @@ def load_card_image(color, value):
         return pygame.Surface((100, 150))  # blank placeholder
 
 # Define available colors and values
-colors = ["red", "green", "blue", "yellow", "white", "purpler"]
+colors = ["red", "green", "blue", "yellow", "white", "purple"]
 values = [0] + list(range(2, 11))  # 0 = investment card
 
 # Build full deck: 3 investment cards per color, 2–10 once each
@@ -97,30 +97,34 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+
         elif event.type == pygame.MOUSEBUTTONDOWN:
-            #Clicked a card?
+            # First: check if a card was clicked
             for i, (img, rect, (color, value)) in enumerate(card_sprites):
                 if rect.collidepoint(event.pos):
                     selected_card_index = i
                     break
-        else:
-            # If a card is selected, check if expedition zone was clicked
-            if selected_card_index is not None:
-                selected_card = card_sprites[selected_card_index][2]
-                selected_color = selected_card[0]
+            else:
+                # If not clicking a card, check if clicked an expedition zone
+                for color, rect in expedition_zones.items():
+                    if rect.collidepoint(event.pos) and selected_card_index is not None:
+                        selected_card = card_sprites[selected_card_index][2]
+                        selected_color = selected_card[0]
 
-                if expedition_zones[selected_color].collidepoint(event.pos):
-                    pile = expeditions[selected_color]
-                    if not pile or selected_card[1] >= pile[-1][1] or selected_card[1] == 0:
-                        expeditions[selected_color].append(selected_card)
-                        del card_sprites[selected_card_index]
-                        selected_card_index = None
+                        if selected_color == color:
+                            pile = expeditions[selected_color]
+                            if not pile or selected_card[1] >= pile[-1][1] or selected_card[1] == 0:
+                                expeditions[selected_color].append(selected_card)
+                                del card_sprites[selected_card_index]
+                                selected_card_index = None
 
-                        # Recalculate layout
-                        for j, (img, _, card) in enumerate(card_sprites):
-                            new_x = start_x + j * (img.get_width() + spacing)
-                            new_rect = img.get_rect(topleft=(new_x, 400))
-                            card_sprites[j] = (img, new_rect, card)
+                                # Recalculate layout
+                                for j, (img, _, card) in enumerate(card_sprites):
+                                    new_x = start_x + j * (img.get_width() + spacing)
+                                    new_rect = img.get_rect(topleft=(new_x, 400))
+                                    card_sprites[j] = (img, new_rect, card)
+
+
 
     pygame.display.flip()
 
