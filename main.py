@@ -91,6 +91,17 @@ for i, color in enumerate(colors):
     rect = image.get_rect(topleft=(x,y))
     expedition_zones[color] = rect
     
+# Move validation
+def is_valid_play(pile, card_value):
+    if not pile:
+        return True
+    top_value = pile[-1][1]
+    if card_value == 0:
+        return top_value == 0  # only play 0 on 0
+    if top_value == 0:
+        return True  # first number after 0
+    return card_value >= top_value  # ascending only
+
 # Game loop
 running = True
 while running:
@@ -135,7 +146,7 @@ while running:
 
                         if selected_color == color:
                             pile = expeditions[selected_color]
-                            if not pile or selected_card[1] >= pile[-1][1] or selected_card[1] == 0:
+                            if is_valid_play(pile, selected_card[1]):
                                 expeditions[selected_color].append(selected_card)
                                 del card_sprites[selected_card_index]
                                 selected_card_index = None
