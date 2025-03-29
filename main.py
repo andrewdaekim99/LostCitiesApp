@@ -98,11 +98,14 @@ while running:
 
     # Draw expedition zones
     for color, rect in expedition_zones.items():
-        pygame.draw.rect(SCREEN, (100, 100, 100), rect, 2)
+        bg_img = expedition_bg_images[color]
+        SCREEN.blit(bg_img, rect.topleft)
+
+        # Draw top card if there's one in the expedition pile
         if expeditions[color]:
             top_card = expeditions[color][-1]
-            img = load_card_image(*top_card)
-            SCREEN.blit(img, rect.topleft)
+            card_img = load_card_image(*top_card)
+            SCREEN.blit(card_img, rect.topleft)
 
     # Draw player hand
     for i, (img, rect, (color, value)) in enumerate(card_sprites):
