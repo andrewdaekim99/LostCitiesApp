@@ -101,11 +101,14 @@ while running:
         bg_img = expedition_bg_images[color]
         SCREEN.blit(bg_img, rect.topleft)
 
-        # Draw top card if there's one in the expedition pile
+        # If there are cards in the expedition pile, draw the top one centered
         if expeditions[color]:
             top_card = expeditions[color][-1]
             card_img = load_card_image(*top_card)
-            SCREEN.blit(card_img, rect.topleft)
+
+            # Center the card over the expedition zone
+            card_rect = card_img.get_rect(center=rect.center)
+            SCREEN.blit(card_img, card_rect.topleft)
 
     # Draw player hand
     for i, (img, rect, (color, value)) in enumerate(card_sprites):
