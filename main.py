@@ -85,9 +85,11 @@ expeditions = {color: [] for color in colors}
 # Create clickable expedition zones
 expedition_zones = {}
 for i, color in enumerate(colors):
-    x = 50 + i * 130
+    x = 50 + i * 140 # spacing
     y = 100
-    expedition_zones[color] = pygame.Rect(x, y, 100, 150)
+    image = expedition_bg_images[color]
+    rect = image.get_rect(topleft=(x,y))
+    expedition_zones[color] = rect
     
 # Game loop
 running = True
