@@ -112,14 +112,14 @@ while running:
         bg_img = expedition_bg_images[color]
         SCREEN.blit(bg_img, rect.topleft)
 
-        # If there are cards in the expedition pile, draw the top one centered
+        # If there are cards in the expedition pile, place them cascading down under the zone
         if expeditions[color]:
-            top_card = expeditions[color][-1]
-            card_img = load_card_image(*top_card)
+            for i, (c, v) in enumerate(expeditions[color]):
+                card_img = load_card_image(c, v)
+                # Offset each card by 30px vertically below the expedition zone
+                card_rect = card_img.get_rect(midtop=(rect.centerx, rect.bottom + i * 30))
+                SCREEN.blit(card_img, card_rect.topleft)
 
-            # Center the card over the expedition zone
-            card_rect = card_img.get_rect(center=rect.center)
-            SCREEN.blit(card_img, card_rect.topleft)
 
     # Draw player hand
     for i, (img, rect, (color, value)) in enumerate(card_sprites):
