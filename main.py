@@ -13,6 +13,8 @@ WIDTH, HEIGHT = 1000, 600
 SCREEN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Lost Cities")
 
+
+
 # Load a card image
 def load_card_image(color, value):
     filename = f"{color}_{value}.png"
@@ -26,6 +28,18 @@ def load_card_image(color, value):
 # Define available colors and values
 colors = ["red", "green", "blue", "yellow", "white", "purple"]
 values = [0] + list(range(2, 11))  # 0 = investment card
+
+
+# Load expedition zone background images
+expedition_bg_images = {}
+for color in colors:
+    filename = f"expedition_{color}.png"
+    path = os.path.join("assets", "expeditions", filename)
+    try:
+        expedition_bg_images[color] = pygame.image.load(path)
+    except FileNotFoundError:
+        print(f"Missing expedition zone image: {path}")
+        expedition_bg_images[color] = pygame.Surface((120, 180))  # fallback
 
 # Build full deck: 3 investment cards per color, 2–10 once each
 deck = []
