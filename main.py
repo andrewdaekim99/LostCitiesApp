@@ -20,23 +20,41 @@ def load_card_image(color, value):
         print(f"Image not found: {path}")
         return pygame.Surface((100, 150))  # blank placeholder
 
-# Example hand: 8 cards of mixed colors/values
+# Example hand: mixed cards
 player_hand = [
-    ("red", 3), ("green", 4), ("blue", 7),
-    ("yellow", 4), ("purple", 10), ("red", 5),
-    ("blue", 2), ("green", 9)
+    ("red", 2), ("green", 5), ("blue", 0),
+    ("yellow", 3), ("white", 9), ("red", 10),
+    ("blue", 4), ("green", 2)
 ]
 
-# Load images and positions
+# --- NEW: Group and sort ---
+from collections import defaultdict
+
+grouped = defaultdict(list)
+for color, value in player_hand:
+    grouped[color].append((color, value))
+
+# Sort within each color group
+for color in grouped:
+    grouped[color].sort(key=lambda x: x[1])
+
+# Define the color display order
+color_order = ["red", "green", "blue", "yellow", "white"]
+
+# Flatten into a sorted display hand
+sorted_hand = []
+for color in color_order:
+    sorted_hand.extend(grouped[color])
+
+# --- Load images and assign positions ---
 card_sprites = []
 spacing = 20
 start_x = 50
 
-for i, (color, value) in enumerate(player_hand):
+for i, (color, value) in enumerate(sorted_hand):
     img = load_card_image(color, value)
     rect = img.get_rect(topleft=(start_x + i * (img.get_width() + spacing), 400))
     card_sprites.append((img, rect, (color, value)))
-
 # Game loop
 running = True
 while running:
