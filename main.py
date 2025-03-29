@@ -9,7 +9,7 @@ from collections import defaultdict
 pygame.init()
 
 # Screen setup
-WIDTH, HEIGHT = 1000, 600
+WIDTH, HEIGHT = 1000, 800
 SCREEN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Lost Cities")
 
@@ -75,7 +75,7 @@ start_x = 50
 
 for i, (color, value) in enumerate(sorted_hand):
     img = load_card_image(color, value)
-    rect = img.get_rect(topleft=(start_x + i * (img.get_width() + spacing), 400))
+    rect = img.get_rect(topleft=(start_x + i * (img.get_width() + spacing), 620))
     card_sprites.append((img, rect, (color, value)))
 
 # Game state
@@ -86,7 +86,7 @@ expeditions = {color: [] for color in colors}
 expedition_zones = {}
 for i, color in enumerate(colors):
     x = 50 + i * 140 # spacing
-    y = 100
+    y = 40
     image = expedition_bg_images[color]
     rect = image.get_rect(topleft=(x,y))
     expedition_zones[color] = rect
