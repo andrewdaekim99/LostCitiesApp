@@ -1,6 +1,7 @@
 import pygame
 import os
 import sys
+import random
 
 # Initialize Pygame
 pygame.init()
@@ -20,12 +21,19 @@ def load_card_image(color, value):
         print(f"Image not found: {path}")
         return pygame.Surface((100, 150))  # blank placeholder
 
-# Example hand: mixed cards
-player_hand = [
-    ("red", 2), ("green", 5), ("blue", 0),
-    ("yellow", 3), ("white", 9), ("red", 10),
-    ("blue", 4), ("green", 2)
-]
+# Define available colors and values
+colors = ["red", "green", "blue", "yellow", "white"]
+values = [0] + list(range(2, 11))  # 0 = investment card
+
+# Build full deck: 3 investment cards per color, 2–10 once each
+deck = []
+for color in colors:
+    deck += [(color, 0)] * 3  # 3 investment cards
+    deck += [(color, v) for v in range(2, 11)]
+
+# Shuffle and deal 8 random cards
+random.shuffle(deck)
+player_hand = deck[:8]
 
 # --- NEW: Group and sort ---
 from collections import defaultdict
