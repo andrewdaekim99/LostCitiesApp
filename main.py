@@ -13,6 +13,9 @@ WIDTH, HEIGHT = 1000, 800
 SCREEN = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Lost Cities")
 
+# load deck image
+draw_pile_img = pygame.image.load("assets/deck/draw_pile.png")
+draw_pile_rect = draw_pile_img.get_rect(topleft=(WIDTH - 150, HEIGHT // 2 - 75))
 
 
 # Load a card image
@@ -73,19 +76,27 @@ card_sprites = []
 spacing = 20
 start_x = 50
 
-# height of the hand
-card_width = 100
-total_hand_width = len(card_sprites) * card_width + (len(card_sprites) - 1) * spacing
-start_x = (WIDTH - total_hand_width) // 2
-hand_y = HEIGHT - 150
-
-# initial hand layout
-for i, (color, value) in enumerate(sorted_hand):
+# temporarily build card_sprites
+for color, value in sorted_hand:
     img = load_card_image(color, value)
-    x = start_x + i * (card_width + spacing)
-    rect = img.get_rect(topleft=(x, hand_y))
+    rect = img.get_rect() # placeholder, position will be set later
     card_sprites.append((img, rect, (color, value)))
 
+# Center and poisiton the hand after it's built
+def layout_hand():
+    hand_y = HEIGHT - 150
+    spacing = 20
+    card_widths = [img.get_width() for img, _, _ in card_sprites]
+    total_hand_width = sum(card_widths) + spacing * (len(card_sprites) - 1)
+    start_x = (WIDTH -  total_hand_width) // 2
+
+    x = start_x
+    for i, (img, _, card) in enumerate(card_sprites):
+        rect = img.get_rect(topleft=(x, hand_y))
+        card_sprites[i] = (img, rect, card)
+        x += img.get_width() + spacing
+
+layout_hand() # calls after building the hand
 # Game state
 selected_card_index = None
 expeditions = {color: [] for color in colors}
