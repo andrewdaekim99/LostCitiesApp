@@ -74,11 +74,16 @@ spacing = 20
 start_x = 50
 
 # height of the hand
+card_width = 100
+total_hand_width = len(card_sprites) * card_width + (len(card_sprites) - 1) * spacing
+start_x = (WIDTH - total_hand_width) // 2
 hand_y = HEIGHT - 150
 
+# initial hand layout
 for i, (color, value) in enumerate(sorted_hand):
     img = load_card_image(color, value)
-    rect = img.get_rect(topleft=(start_x + i * (img.get_width() + spacing), hand_y))
+    x = start_x + i * (card_width + spacing)
+    rect = img.get_rect(topleft=(x, hand_y))
     card_sprites.append((img, rect, (color, value)))
 
 # Game state
