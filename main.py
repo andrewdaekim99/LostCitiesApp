@@ -85,10 +85,16 @@ for i, (color, value) in enumerate(sorted_hand):
 selected_card_index = None
 expeditions = {color: [] for color in colors}
 
+# expedition zone width setup
+zone_width = 120
+spacing = 20
+total_zone_width = len(colors) * zone_width + (len(colors) - 1) * spacing
+start_x = (WIDTH - total_zone_width) // 2
+
 # Create clickable expedition zones
 expedition_zones = {}
 for i, color in enumerate(colors):
-    x = 50 + i * 140 # spacing
+    x = start_x + i * (zone_width + spacing)
     y = 40
     image = expedition_bg_images[color]
     rect = image.get_rect(topleft=(x,y))
