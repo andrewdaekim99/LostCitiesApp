@@ -132,6 +132,12 @@ running = True
 while running:
     SCREEN.fill((20, 20, 20))  # dark background
 
+    # load draw pile deck
+    SCREEN.blit(draw_pile_img, draw_pile_rect.topleft)
+    font = pygame.font.SysFont(None, 24)
+    deck_count = font.render(f"{len(deck)}", True, (255, 255, 255))
+    SCREEN.blit(deck_count, draw_pile_rect.move(10, -20))
+
     # Draw expedition zones
     for color, rect in expedition_zones.items():
         bg_img = expedition_bg_images[color]
@@ -157,11 +163,21 @@ while running:
             running = False
 
         elif event.type == pygame.MOUSEBUTTONDOWN:
+            if draw_pile_rect.collidepoint(event.pos):
+                    if deck:
+                        color, value = deck.pop()
+                        img = load_card_image(color, value)
+                        rect = img.get_rect() # placeholder
+                        card_sprites.append((img, rect, (color, value)))
+                        print(f"Drew: {color} {value} — {len(deck)} cards left")
+                        layout_hand() # re-layout the new hand
+                        selected_card_index = None
             # First: check if a card was clicked
             for i, (img, rect, (color, value)) in enumerate(card_sprites):
                 if rect.collidepoint(event.pos):
                     selected_card_index = i
                     break
+                
             else:
                 # If not clicking a card, check if clicked an expedition zone
                 for color, rect in expedition_zones.items():
