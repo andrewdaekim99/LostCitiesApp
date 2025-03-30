@@ -99,6 +99,7 @@ def layout_hand():
 layout_hand() # calls after building the hand
 # Game state
 selected_card_index = None
+must_draw = False # conditional for when a player is or is not allowed to draw a card
 expeditions = {color: [] for color in colors}
 
 # expedition zone width setup
@@ -157,6 +158,11 @@ while running:
         rect_to_draw = rect.move(0, -20) if i ==selected_card_index else rect
         SCREEN.blit(img, rect_to_draw)
 
+    # Draw reminder if player must draw
+    if must_draw:
+        msg = font.render("You must draw a card!", True, (255, 100, 100))
+        SCREEN.blit(msg, (WIDTH // 2 - 100, HEIGHT // 2 - 200))
+
     # Handle events
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -164,40 +170,37 @@ while running:
 
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if draw_pile_rect.collidepoint(event.pos):
-                    if deck:
+                    if must_draw and len(card_sprites) < 8 and deck:
                         color, value = deck.pop()
                         img = load_card_image(color, value)
                         rect = img.get_rect() # placeholder
                         card_sprites.append((img, rect, (color, value)))
-                        print(f"Drew: {color} {value} — {len(deck)} cards left")
                         layout_hand() # re-layout the new hand
                         selected_card_index = None
+                        must_draw = False
             # First: check if a card was clicked
-            for i, (img, rect, (color, value)) in enumerate(card_sprites):
-                if rect.collidepoint(event.pos):
-                    selected_card_index = i
-                    break
+            if not must_draw:
+                for i, (img, rect, (color, value)) in enumerate(card_sprites):
+                    if rect.collidepoint(event.pos):
+                        selected_card_index = i
+                        break
                 
-            else:
-                # If not clicking a card, check if clicked an expedition zone
-                for color, rect in expedition_zones.items():
-                    if rect.collidepoint(event.pos) and selected_card_index is not None:
-                        selected_card = card_sprites[selected_card_index][2]
-                        selected_color = selected_card[0]
+                else:
+                    # If not clicking a card, check if clicked an expedition zone
+                    for color, rect in expedition_zones.items():
+                        if rect.collidepoint(event.pos) and selected_card_index is not None:
+                            selected_card = card_sprites[selected_card_index][2]
+                            selected_color = selected_card[0]
 
-                        if selected_color == color:
-                            pile = expeditions[selected_color]
-                            if is_valid_play(pile, selected_card[1]):
-                                expeditions[selected_color].append(selected_card)
-                                del card_sprites[selected_card_index]
-                                selected_card_index = None
+                            if selected_color == color:
+                                pile = expeditions[selected_color]
+                                if is_valid_play(pile, selected_card[1]):
+                                    expeditions[selected_color].append(selected_card)
+                                    del card_sprites[selected_card_index]
+                                    selected_card_index = None
 
-                                # Recalculate layout
-                                hand_y = HEIGHT - 150 # anchor to bottom of screen
-                                for j, (img, _, card) in enumerate(card_sprites):
-                                    new_x = start_x + j * (img.get_width() + spacing)
-                                    new_rect = img.get_rect(topleft=(new_x, hand_y))
-                                    card_sprites[j] = (img, new_rect, card)
+                                    layout_hand()
+                                    must_draw = True
 
 
 
