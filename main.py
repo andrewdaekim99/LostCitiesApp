@@ -73,9 +73,12 @@ card_sprites = []
 spacing = 20
 start_x = 50
 
+# height of the hand
+hand_y = HEIGHT - 150
+
 for i, (color, value) in enumerate(sorted_hand):
     img = load_card_image(color, value)
-    rect = img.get_rect(topleft=(start_x + i * (img.get_width() + spacing), 620))
+    rect = img.get_rect(topleft=(start_x + i * (img.get_width() + spacing), hand_y))
     card_sprites.append((img, rect, (color, value)))
 
 # Game state
@@ -152,9 +155,10 @@ while running:
                                 selected_card_index = None
 
                                 # Recalculate layout
+                                hand_y = HEIGHT - 150 # anchor to bottom of screen
                                 for j, (img, _, card) in enumerate(card_sprites):
                                     new_x = start_x + j * (img.get_width() + spacing)
-                                    new_rect = img.get_rect(topleft=(new_x, 400))
+                                    new_rect = img.get_rect(topleft=(new_x, hand_y))
                                     card_sprites[j] = (img, new_rect, card)
 
 
